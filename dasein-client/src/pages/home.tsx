@@ -1,8 +1,15 @@
-import { createSignal } from 'solid-js';
+import { createSignal } from "solid-js";
+
+const [count, setCount] = createSignal(0);
+
+const partialCount = (count: number) => {
+  if (count > 10) {
+    return "Too big!";
+  }
+  return String(count);
+};
 
 export default function Home() {
-  const [count, setCount] = createSignal(0);
-
   return (
     <section class="bg-gray-100 text-gray-700 p-8">
       <h1 class="text-2xl font-bold">Home</h1>
@@ -17,7 +24,7 @@ export default function Home() {
           -
         </button>
 
-        <output class="p-10px">Count: {count()}</output>
+        <output class="p-10px">Count: {partialCount(count())}</output>
 
         <button
           type="button"
