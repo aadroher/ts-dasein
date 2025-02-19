@@ -1,4 +1,5 @@
 import { For } from "solid-js";
+import { Temporal } from "temporal-polyfill";
 
 type WeekDayCode = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
@@ -18,16 +19,32 @@ const weekDays: WeekDay[] = [
   { code: "sun", name: "Sunday", shortName: "Sun" },
 ];
 
-const dayTimeSlots = () => {
-  const slots = Array.from({ length: 24 * 4 }, (_, i) => i);
-  return slots.map((slot) => ({
-    code: slot,
-    name: `${slot}:00`,
-  }));
+const getDayTimeSlots = () => {
+  const slotIndexes = Array.from({ length: 24 * 4 }, (_, i) => i);
+  const initialSlot = Temporal.PlainTime.from({ hour: 0, minute: 0 });
+  const slotDuration = Temporal.Duration.from({ minutes: 15 });
+  return slotIndexes.map((slotIndex) => {
+    const start = initialSlot.add(
+      Temporal.Duration.from({ minutes: slotIndex * 15 })
+    );
+    const end = start.add(slotDuration);
+    return { start, end };
+  });
 };
 
 const Calendar = () => {
-  return <For each={weekDays}>{(day) => <div>{day.name}</div>}</For>;
+  return (
+    <div>
+      <div>
+        <For each={weekDays}>{(day) => <div>{day.name}</div>}</For>
+      </div>
+      <div>
+        <For each={getDayTimeSlots()}>
+          {(slot) => <div>{slot.start.toString()}</div>}
+        </For>
+      </div>
+    </div>
+  );
 };
 
 export { Calendar };
