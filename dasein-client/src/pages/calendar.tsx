@@ -36,18 +36,27 @@ const getDayTimeSlots = () => {
 const Calendar = () => {
   return (
     <div>
-      <div class="grid grid-cols-[repeat(5, 1fr)]">
-        <For each={weekDays}>{(day) => <div>{day.code}</div>}</For>
-      </div>
-      <div class="grid">
-        <For each={getDayTimeSlots()}>
-          {(slot) => (
+      <table>
+        <thead>
+          <tr>
             <For each={weekDays}>
-              {() => <div>{slot.start.toString()}</div>}
+              {(day) => <th scope="col">{day.code}</th>}
             </For>
-          )}
-        </For>
-      </div>
+          </tr>
+        </thead>
+        <tbody>
+          <For each={getDayTimeSlots()}>
+            {(slot) => (
+              <tr>
+                <For each={weekDays}>
+                  {() => <td>{slot.start.toString()}</td>}
+                </For>
+              </tr>
+            )}
+          </For>
+        </tbody>
+      </table>
+      <div class="grid"></div>
     </div>
   );
 };
