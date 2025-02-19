@@ -1,5 +1,6 @@
 import { For } from "solid-js";
 import { Temporal } from "temporal-polyfill";
+import "./calendar.css";
 
 type WeekDayCode = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
 
@@ -35,10 +36,10 @@ const getDayTimeSlots = () => {
 const Calendar = () => {
   return (
     <div>
-      <div class="grid grid-cols-7">
+      <div class="grid grid-cols-[repeat(5, 1fr)]">
         <For each={weekDays}>{(day) => <div>{day.code}</div>}</For>
       </div>
-      <div class="grid grid-cols-7">
+      <div class="grid">
         <For each={getDayTimeSlots()}>
           {(slot) => (
             <For each={weekDays}>
