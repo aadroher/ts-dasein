@@ -16,8 +16,8 @@ const weekDays: WeekDay[] = [
   { code: "wed", name: "Wednesday", shortName: "Wed" },
   { code: "thu", name: "Thursday", shortName: "Thu" },
   { code: "fri", name: "Friday", shortName: "Fri" },
-  { code: "sat", name: "Saturday", shortName: "Sat" },
-  { code: "sun", name: "Sunday", shortName: "Sun" },
+  // { code: "sat", name: "Saturday", shortName: "Sat" },
+  // { code: "sun", name: "Sunday", shortName: "Sun" },
 ];
 
 const getDayTimeSlots = () => {
@@ -34,25 +34,43 @@ const getDayTimeSlots = () => {
 };
 
 const Calendar = () => {
+  const dayTimeSlots = getDayTimeSlots();
   return (
     <div class="w-full flex flex-col">
       <div class="flex flex-row flex-nowrap">
+        <div class="w-16 shrink-0 flex flex-row justify-center"></div>
         <For each={weekDays}>
           {(day) => (
-            <div class="w-24 shrink-0 flex-auto flex flex-row justify-center">
-              <div class="justify-self-auto">{day.code}</div>
+            <div class="min-w-16 max-w-48 shrink-0 flex-auto flex flex-row justify-center border-l">
+              <div class="px-4 py-2">{day.code}</div>
             </div>
           )}
         </For>
       </div>
-      <div>
-        <For each={getDayTimeSlots()}>
-          {(slot) => (
-            <For each={weekDays}>
-              {() => <div>{slot.start.toString()}</div>}
-            </For>
+      <div class="flex flex-row border-y">
+        <div class="w-16 flex flex-column flex-wrap justify-center">
+          <For each={dayTimeSlots}>
+            {(slot) => (
+              <div class="w-14 h-12 flex flex-column justify-center text-xs relative">
+                <span class="relative bottom-[-12px]">
+                  {slot.end.toLocaleString("en-US", {
+                    hour: "numeric",
+                  })}
+                </span>
+              </div>
+            )}
+          </For>
+        </div>
+
+        {/* <For each={weekDays}>
+          {() => (
+            <div class="min-w-16 max-w-48 flex flex-column justify-center">
+              <For each={dayTimeSlots}>
+                {(slot) => <div>{slot.start.toString()}</div>}
+              </For>
+            </div>
           )}
-        </For>
+        </For> */}
       </div>
     </div>
   );
