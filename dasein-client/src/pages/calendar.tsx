@@ -20,12 +20,12 @@ const weekDays: WeekDay[] = [
 ];
 
 const getDayTimeSlots = () => {
-  const slotIndexes = Array.from({ length: 24 * 4 }, (_, i) => i);
+  const slotIndexes = Array.from({ length: 24 }, (_, i) => i);
   const initialSlot = Temporal.PlainTime.from({ hour: 0, minute: 0 });
-  const slotDuration = Temporal.Duration.from({ minutes: 15 });
+  const slotDuration = Temporal.Duration.from({ minutes: 60 });
   return slotIndexes.map((slotIndex) => {
     const start = initialSlot.add(
-      Temporal.Duration.from({ minutes: slotIndex * 15 })
+      Temporal.Duration.from({ minutes: slotIndex * 60 })
     );
     const end = start.add(slotDuration);
     return { start, end };
@@ -35,12 +35,16 @@ const getDayTimeSlots = () => {
 const Calendar = () => {
   return (
     <div>
-      <div>
-        <For each={weekDays}>{(day) => <div>{day.name}</div>}</For>
+      <div class="grid grid-cols-7">
+        <For each={weekDays}>{(day) => <div>{day.code}</div>}</For>
       </div>
-      <div>
+      <div class="grid grid-cols-7">
         <For each={getDayTimeSlots()}>
-          {(slot) => <div>{slot.start.toString()}</div>}
+          {(slot) => (
+            <For each={weekDays}>
+              {() => <div>{slot.start.toString()}</div>}
+            </For>
+          )}
         </For>
       </div>
     </div>

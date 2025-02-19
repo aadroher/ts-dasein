@@ -12,11 +12,11 @@
   "license": "MIT",
   "devDependencies": {
     "vite": "^6.0.0",
-    "vite-plugin-solid": "^2.11.1"
+    "vite-plugin-solid": "^2.11.1",
+    "@tailwindcss/vite": "^4.0.7"
   },
   "dependencies": {
     "@solidjs/router": "^0.15.1",
-    "@tailwindcss/vite": "^4.0.7",
     "solid-js": "^1.9.3",
     "tailwindcss": "^4.0.7",
     "temporal-polyfill": "^0.2.5"

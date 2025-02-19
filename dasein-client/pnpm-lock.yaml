@@ -11,9 +11,6 @@ importers:
       '@solidjs/router':
         specifier: ^0.15.1
         version: 0.15.1(solid-js@1.9.3)
-      '@tailwindcss/vite':
-        specifier: ^4.0.7
-        version: 4.0.7(vite@6.0.0(jiti@2.4.2)(lightningcss@1.29.1)(yaml@2.6.1))
       solid-js:
         specifier: ^1.9.3
         version: 1.9.3
@@ -24,6 +21,9 @@ importers:
         specifier: ^0.2.5
         version: 0.2.5
     devDependencies:
+      '@tailwindcss/vite':
+        specifier: ^4.0.7
+        version: 4.0.7(vite@6.0.0(jiti@2.4.2)(lightningcss@1.29.1)(yaml@2.6.1))
       vite:
         specifier: ^6.0.0
         version: 6.0.0(jiti@2.4.2)(lightningcss@1.29.1)(yaml@2.6.1)
