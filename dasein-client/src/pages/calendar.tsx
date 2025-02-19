@@ -35,11 +35,17 @@ const getDayTimeSlots = () => {
 
 const Calendar = () => {
   return (
-    <div>
-      <div class="grid grid-cols-[repeat(5, 1fr)]">
-        <For each={weekDays}>{(day) => <div>{day.code}</div>}</For>
+    <div class="w-full flex flex-col">
+      <div class="flex flex-row flex-nowrap">
+        <For each={weekDays}>
+          {(day) => (
+            <div class="w-24 shrink-0 flex-auto flex flex-row justify-center">
+              <div class="justify-self-auto">{day.code}</div>
+            </div>
+          )}
+        </For>
       </div>
-      <div class="grid">
+      <div>
         <For each={getDayTimeSlots()}>
           {(slot) => (
             <For each={weekDays}>
