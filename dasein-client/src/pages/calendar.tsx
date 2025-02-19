@@ -36,20 +36,24 @@ const getDayTimeSlots = () => {
 const Calendar = () => {
   return (
     <div>
-      <table>
+      <table class="w-full">
         <thead>
           <tr>
             <For each={weekDays}>
-              {(day) => <th scope="col">{day.code}</th>}
+              {(day) => (
+                <th scope="col" class="h-10">
+                  {day.code}
+                </th>
+              )}
             </For>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="border">
           <For each={getDayTimeSlots()}>
             {(slot) => (
               <tr>
                 <For each={weekDays}>
-                  {() => <td>{slot.start.toString()}</td>}
+                  {() => <td class="h-12 border border-dashed"> </td>}
                 </For>
               </tr>
             )}

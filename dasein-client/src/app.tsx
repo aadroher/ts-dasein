@@ -36,7 +36,7 @@ const App: Component = (props: { children: Element }) => {
         </ul>
       </nav>
 
-      <main>
+      <main class="p-1">
         <Suspense>{props.children}</Suspense>
       </main>
     </>
