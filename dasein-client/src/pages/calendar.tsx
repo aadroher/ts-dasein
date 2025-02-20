@@ -16,17 +16,32 @@ const weekDays: WeekDay[] = [
   { code: "wed", name: "Wednesday", shortName: "Wed" },
   { code: "thu", name: "Thursday", shortName: "Thu" },
   { code: "fri", name: "Friday", shortName: "Fri" },
-  { code: "sat", name: "Saturday", shortName: "Sat" },
-  { code: "sun", name: "Sunday", shortName: "Sun" },
+  // { code: "sat", name: "Saturday", shortName: "Sat" },
+  // { code: "sun", name: "Sunday", shortName: "Sun" },
 ];
 
-const getDayTimeSlots = () => {
-  const slotIndexes = Array.from({ length: 24 }, (_, i) => i);
-  const initialSlot = Temporal.PlainTime.from({ hour: 0, minute: 0 });
-  const slotDuration = Temporal.Duration.from({ minutes: 60 });
+type GetDayTimeSlots = (params?: {
+  from?: Temporal.PlainTime;
+  to?: Temporal.PlainTime;
+  slotDuration?: Temporal.Duration;
+}) => { start: Temporal.PlainTime; end: Temporal.PlainTime }[];
+
+const getDayTimeSlots: GetDayTimeSlots = ({
+  from = Temporal.PlainTime.from({ hour: 0, minute: 0 }),
+  to = Temporal.PlainTime.from({ hour: 23, minute: 59 }),
+  slotDuration = Temporal.Duration.from({ minutes: 60 }),
+} = {}) => {
+  const timeDiff = from.until(to);
+  const totalMinutes = timeDiff.total({ unit: "minutes" });
+  const slotCount = Math.ceil(
+    totalMinutes / slotDuration.total({ unit: "minutes" })
+  );
+  const slotIndexes = Array.from({ length: slotCount }, (_, i) => i);
   return slotIndexes.map((slotIndex) => {
-    const start = initialSlot.add(
-      Temporal.Duration.from({ minutes: slotIndex * 60 })
+    const start = from.add(
+      Temporal.Duration.from({
+        minutes: slotIndex * slotDuration.total({ unit: "minutes" }),
+      })
     );
     const end = start.add(slotDuration);
     return { start, end };
@@ -34,9 +49,15 @@ const getDayTimeSlots = () => {
 };
 
 const Calendar = () => {
-  const dayTimeSlots = getDayTimeSlots();
+  const dayTimeSlots = getDayTimeSlots({
+    from: Temporal.PlainTime.from({ hour: 8, minute: 0 }),
+    to: Temporal.PlainTime.from({ hour: 18, minute: 0 }),
+    slotDuration: Temporal.Duration.from({ minutes: 60 }),
+  });
+  console.log(dayTimeSlots);
+
   return (
-    <div class="max-w-screen-lg mx-auto p-4">
+    <div class="mx-auto p-4">
       <ul
         class="w-full grid"
         style={{
@@ -55,8 +76,8 @@ const Calendar = () => {
         <For each={dayTimeSlots}>
           {(slot, index) => (
             <>
-              <li class="min-w-12 h-12 col-span-1 flex items-center justify-end pr-2">
-                <span class="text-xs relative top-[-1.5rem]">
+              <li class="min-w-12 h-18 col-span-1 flex items-center justify-end pr-2">
+                <span class="text-xs relative top-[-2.25rem]">
                   {index() !== 0
                     ? slot.start.toLocaleString("en-US", {
                         hour: "numeric",
@@ -66,7 +87,7 @@ const Calendar = () => {
               </li>
               <For each={weekDays}>
                 {(day) => (
-                  <li class="min-w-36 h-12 col-span-2 border border-dashed"></li>
+                  <li class="min-w-36 h-18 col-span-2 border border-dashed"></li>
                 )}
               </For>
             </>
