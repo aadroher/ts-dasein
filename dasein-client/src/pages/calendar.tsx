@@ -16,8 +16,8 @@ const weekDays: WeekDay[] = [
   { code: "wed", name: "Wednesday", shortName: "Wed" },
   { code: "thu", name: "Thursday", shortName: "Thu" },
   { code: "fri", name: "Friday", shortName: "Fri" },
-  // { code: "sat", name: "Saturday", shortName: "Sat" },
-  // { code: "sun", name: "Sunday", shortName: "Sun" },
+  { code: "sat", name: "Saturday", shortName: "Sat" },
+  { code: "sun", name: "Sunday", shortName: "Sun" },
 ];
 
 const getDayTimeSlots = () => {
@@ -36,42 +36,43 @@ const getDayTimeSlots = () => {
 const Calendar = () => {
   const dayTimeSlots = getDayTimeSlots();
   return (
-    <div class="w-full flex flex-col">
-      <div class="flex flex-row flex-nowrap">
-        <div class="w-16 shrink-0 flex flex-row justify-center"></div>
+    <div class="max-w-screen-lg mx-auto p-4">
+      <ul
+        class="w-full grid"
+        style={{
+          "grid-template-columns": `repeat(${weekDays.length * 2 + 1}, 1fr)`,
+          "grid-template-rows": `repeat(${dayTimeSlots.length + 1}, 1fr)`,
+        }}
+      >
+        <li class="w-12 h-8 col-span-1"></li>
         <For each={weekDays}>
           {(day) => (
-            <div class="min-w-16 max-w-48 shrink-0 flex-auto flex flex-row justify-center border-l">
-              <div class="px-4 py-2">{day.code}</div>
-            </div>
+            <li class="min-w-36 col-span-2 flex items-center justify-center">
+              <span>{day.code}</span>
+            </li>
           )}
         </For>
-      </div>
-      <div class="flex flex-row border-y">
-        <div class="w-16 flex flex-column flex-wrap justify-center">
-          <For each={dayTimeSlots}>
-            {(slot) => (
-              <div class="w-14 h-12 flex flex-column justify-center text-xs relative">
-                <span class="relative bottom-[-12px]">
-                  {slot.end.toLocaleString("en-US", {
-                    hour: "numeric",
-                  })}
+        <For each={dayTimeSlots}>
+          {(slot, index) => (
+            <>
+              <li class="min-w-12 h-12 col-span-1 flex items-center justify-end pr-2">
+                <span class="text-xs relative top-[-1.5rem]">
+                  {index() !== 0
+                    ? slot.start.toLocaleString("en-US", {
+                        hour: "numeric",
+                      })
+                    : null}
                 </span>
-              </div>
-            )}
-          </For>
-        </div>
-
-        {/* <For each={weekDays}>
-          {() => (
-            <div class="min-w-16 max-w-48 flex flex-column justify-center">
-              <For each={dayTimeSlots}>
-                {(slot) => <div>{slot.start.toString()}</div>}
+              </li>
+              <For each={weekDays}>
+                {(day) => (
+                  <li class="min-w-36 h-12 col-span-2 border border-dashed"></li>
+                )}
               </For>
-            </div>
+            </>
           )}
-        </For> */}
-      </div>
+        </For>
+      </ul>
     </div>
   );
 };
