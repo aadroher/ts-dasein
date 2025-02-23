@@ -3,14 +3,30 @@ import type { RouteDefinition } from "@solidjs/router";
 
 import Home from "./pages/home";
 import { Calendar } from "./pages/calendar";
+import { NewTeacher } from "./pages/teachers/new_teacher";
+
 export const routes: RouteDefinition[] = [
   {
     path: "/",
-    component: Home,
-  },
-  {
-    path: "/calendar",
-    component: Calendar,
+    children: [
+      {
+        path: "/",
+        component: Home,
+      },
+      {
+        path: "/teachers",
+        children: [
+          {
+            path: "/new",
+            component: NewTeacher,
+          },
+        ],
+      },
+      {
+        path: "/calendar",
+        component: Calendar,
+      },
+    ],
   },
   {
     path: "/about",
