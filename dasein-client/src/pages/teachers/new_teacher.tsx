@@ -1,18 +1,28 @@
 import { createSignal, createEffect } from "solid-js";
 import { mainStore, setMainStore } from "../../stores/main";
 import type { Teacher } from "../../domain/entities/teacher";
-
+import { newTeacherEntity } from "../../domain/entities/teacher";
 const [teacher, setTeacher] = createSignal<Teacher | null>(null);
 
 const NewTeacher = () => {
   createEffect(() => {
     console.log(teacher());
+    console.log(mainStore.teachers);
   });
 
   return (
     <div class="w-xl mx-auto flex flex-col gap-4">
       <h1 class="text-2xl font-bold">New Teacher</h1>
-      <form class="flex flex-col gap-4">
+      <form
+        class="flex flex-col gap-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setMainStore({
+            ...mainStore,
+            teachers: [...mainStore.teachers, newTeacherEntity(teacher())],
+          });
+        }}
+      >
         <div class="flex flex-col gap-2">
           <label for="fullName">Full Name</label>
           <input
@@ -42,6 +52,9 @@ const NewTeacher = () => {
               });
             }}
           />
+        </div>
+        <div class="flex flex-col gap-2">
+          <button class="bg-blue-500 text-white p-2 rounded-md">Save</button>
         </div>
       </form>
     </div>
