@@ -1,9 +1,11 @@
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
 import tailwindcss from "@tailwindcss/vite";
+import wasm from "vite-plugin-wasm";
+import topLevelAwait from "vite-plugin-top-level-await";
 
 export default defineConfig({
-  plugins: [solidPlugin(), tailwindcss()],
+  plugins: [wasm(), topLevelAwait(), solidPlugin(), tailwindcss()],
   server: {
     port: 3000,
   },
