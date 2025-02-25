@@ -2,7 +2,27 @@ import { createSignal, createEffect } from "solid-js";
 import { mainStore, setMainStore } from "../../stores/main";
 import type { Teacher } from "../../domain/entities/teacher";
 import { newTeacherEntity } from "../../domain/entities/teacher";
+import * as Automerge from "@automerge/automerge";
+import { Repo } from "@automerge/automerge-repo";
+import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb";
+
 const [teacher, setTeacher] = createSignal<Teacher | null>(null);
+
+const storageAdapter = new IndexedDBStorageAdapter("teacher-db");
+const repo = new Repo({
+  storage: storageAdapter,
+});
+
+const createTeacherDoc = ({ fullName, email }: Teacher) => {
+  const doc = Automerge.from({
+    fullName,
+    email,
+  });
+  console.log("Automerge doc", doc);
+  const handle = repo.create(doc);
+  console.log("Handle", handle);
+  return handle;
+};
 
 const NewTeacher = () => {
   createEffect(() => {
@@ -17,6 +37,7 @@ const NewTeacher = () => {
         class="flex flex-col gap-4"
         onSubmit={(e) => {
           e.preventDefault();
+          const doc = createTeacherDoc(teacher());
           setMainStore({
             ...mainStore,
             teachers: [...mainStore.teachers, newTeacherEntity(teacher())],
