@@ -5,12 +5,14 @@ import { newTeacherEntity } from "../../domain/entities/teacher";
 import * as Automerge from "@automerge/automerge";
 import { Repo } from "@automerge/automerge-repo";
 import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb";
+import { BroadcastChannelNetworkAdapter } from "@automerge/automerge-repo-network-broadcastchannel";
 
 const [teacher, setTeacher] = createSignal<Teacher | null>(null);
 
 const storageAdapter = new IndexedDBStorageAdapter("teacher-db");
 const repo = new Repo({
   storage: storageAdapter,
+  network: [new BroadcastChannelNetworkAdapter()],
 });
 
 const createTeacherDoc = ({ fullName, email }: Teacher) => {
@@ -37,11 +39,7 @@ const NewTeacher = () => {
         class="flex flex-col gap-4"
         onSubmit={(e) => {
           e.preventDefault();
-          const doc = createTeacherDoc(teacher());
-          setMainStore({
-            ...mainStore,
-            teachers: [...mainStore.teachers, newTeacherEntity(teacher())],
-          });
+          createTeacherDoc(teacher());
         }}
       >
         <div class="flex flex-col gap-2">

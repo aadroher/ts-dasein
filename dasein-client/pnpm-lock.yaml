@@ -14,6 +14,9 @@ importers:
       '@automerge/automerge-repo':
         specifier: ^1.2.1
         version: 1.2.1(@swc/core@1.11.1)(@types/node@22.13.5)(typescript@5.7.3)
+      '@automerge/automerge-repo-network-broadcastchannel':
+        specifier: ^1.2.1
+        version: 1.2.1(@swc/core@1.11.1)(@types/node@22.13.5)(typescript@5.7.3)
       '@automerge/automerge-repo-network-messagechannel':
         specifier: ^1.2.1
         version: 1.2.1(@swc/core@1.11.1)(@types/node@22.13.5)(typescript@5.7.3)
@@ -57,6 +60,9 @@ packages:
   '@ampproject/remapping@2.2.1':
     resolution: {integrity: sha512-lFMjJTrFL3j7L9yBxwYfCq2k6qqwHyzuUl/XBnif78PWTJYyL/dfowQHWE3sp6U6ZzqWiiIZnpTMO96zhkjwtg==}
     engines: {node: '>=6.0.0'}
+
+  '@automerge/automerge-repo-network-broadcastchannel@1.2.1':
+    resolution: {integrity: sha512-Jm3NiuFe/+3aHpHhRYEYOchkMkavMw7+ysNKqYgC7zyGM8jtBowJhxmD4awvz+I5dWNA64KNJIt4k7h295HPAQ==}
 
   '@automerge/automerge-repo-network-messagechannel@1.2.1':
     resolution: {integrity: sha512-MxWdCZ4EWWyL7V7K6v92XiZL+0qinnxYdGYDyvmSXDVVnkfZ94/J+i0lVt0uKdNs3EGGkKKGs6MIzsyR8llyRA==}
@@ -1115,6 +1121,16 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.18
+
+  '@automerge/automerge-repo-network-broadcastchannel@1.2.1(@swc/core@1.11.1)(@types/node@22.13.5)(typescript@5.7.3)':
+    dependencies:
+      '@automerge/automerge-repo': 1.2.1(@swc/core@1.11.1)(@types/node@22.13.5)(typescript@5.7.3)
+    transitivePeerDependencies:
+      - '@swc/core'
+      - '@swc/wasm'
+      - '@types/node'
+      - supports-color
+      - typescript
 
   '@automerge/automerge-repo-network-messagechannel@1.2.1(@swc/core@1.11.1)(@types/node@22.13.5)(typescript@5.7.3)':
     dependencies:

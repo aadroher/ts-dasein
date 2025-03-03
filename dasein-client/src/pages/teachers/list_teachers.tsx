@@ -1,5 +1,18 @@
-import { mainStore } from "../../stores/main";
+import { Repo } from "@automerge/automerge-repo";
+import { mainStore, setMainStore } from "../../stores/main";
 import { A } from "@solidjs/router";
+import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb";
+import { BroadcastChannelNetworkAdapter } from "@automerge/automerge-repo-network-broadcastchannel";
+
+const storageAdapter = new IndexedDBStorageAdapter("teacher-db");
+const repo = new Repo({
+  storage: storageAdapter,
+  network: [new BroadcastChannelNetworkAdapter()],
+});
+
+repo.on("document", (doc) => {
+  console.log("Document", doc);
+});
 
 const ListTeachers = () => {
   return (
