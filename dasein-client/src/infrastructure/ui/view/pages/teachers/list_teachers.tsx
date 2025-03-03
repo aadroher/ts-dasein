@@ -10,8 +10,6 @@ const repo = new Repo({
   network: [new BroadcastChannelNetworkAdapter()],
 });
 
-console.log("handles outside", repo.handles);
-
 repo.on("document", async (doc) => {
   console.log("Document", doc);
   console.log(doc.handle.isReady());
