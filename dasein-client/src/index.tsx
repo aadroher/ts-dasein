@@ -3,7 +3,7 @@ import "./infrastructure/ui/styles/index.css";
 
 import { render, Suspense } from "solid-js/web";
 
-import App from "./infrastructure/ui/view/app";
+import App from "./infrastructure/ui/view/layout";
 import { Router } from "@solidjs/router";
 import { routes } from "./infrastructure/ui/view/routes";
 
