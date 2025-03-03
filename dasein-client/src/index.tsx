@@ -1,11 +1,11 @@
 /* @refresh reload */
-import "./index.css";
+import "./infrastructure/ui/styles/index.css";
 
 import { render, Suspense } from "solid-js/web";
 
-import App from "./app";
+import App from "./infrastructure/ui/view/app";
 import { Router } from "@solidjs/router";
-import { routes } from "./routes";
+import { routes } from "./infrastructure/ui/view/routes";
 
 const root = document.getElementById("root");
 
