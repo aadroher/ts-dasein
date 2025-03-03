@@ -1,7 +1,6 @@
 import { createSignal, createEffect } from "solid-js";
-import { mainStore, setMainStore } from "../../stores/main";
-import type { Teacher } from "../../domain/entities/teacher";
-import { newTeacherEntity } from "../../domain/entities/teacher";
+import { mainStore, setMainStore } from "../../../state/stores/main";
+import type { Teacher } from "../../../../../domain/entities/teacher";
 import * as Automerge from "@automerge/automerge";
 import { Repo } from "@automerge/automerge-repo";
 import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb";

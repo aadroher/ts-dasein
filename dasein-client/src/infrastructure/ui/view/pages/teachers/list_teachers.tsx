@@ -1,9 +1,9 @@
 import { Repo } from "@automerge/automerge-repo";
-import { mainStore, setMainStore } from "../../stores/main";
+import { mainStore, setMainStore } from "../../../state/stores/main";
 import { A } from "@solidjs/router";
 import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb";
 import { BroadcastChannelNetworkAdapter } from "@automerge/automerge-repo-network-broadcastchannel";
-import { newTeacherEntity } from "../../domain/entities/teacher";
+import { newTeacherEntity } from "../../../../../domain/entities/teacher";
 const storageAdapter = new IndexedDBStorageAdapter("teacher-db");
 const repo = new Repo({
   storage: storageAdapter,
