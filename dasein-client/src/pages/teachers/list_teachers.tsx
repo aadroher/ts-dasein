@@ -3,15 +3,29 @@ import { mainStore, setMainStore } from "../../stores/main";
 import { A } from "@solidjs/router";
 import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb";
 import { BroadcastChannelNetworkAdapter } from "@automerge/automerge-repo-network-broadcastchannel";
-
+import { newTeacherEntity } from "../../domain/entities/teacher";
 const storageAdapter = new IndexedDBStorageAdapter("teacher-db");
 const repo = new Repo({
   storage: storageAdapter,
   network: [new BroadcastChannelNetworkAdapter()],
 });
 
-repo.on("document", (doc) => {
+console.log("handles outside", repo.handles);
+
+repo.on("document", async (doc) => {
   console.log("Document", doc);
+  console.log(doc.handle.isReady());
+  const document = await doc.handle.doc();
+  setMainStore({
+    ...mainStore,
+    teachers: [
+      ...mainStore.teachers,
+      newTeacherEntity({
+        fullName: document.fullName,
+        email: document.email,
+      }),
+    ],
+  });
 });
 
 const ListTeachers = () => {
