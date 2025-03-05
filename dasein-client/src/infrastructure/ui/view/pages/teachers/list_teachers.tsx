@@ -10,21 +10,21 @@ const repo = new Repo({
   network: [new BroadcastChannelNetworkAdapter()],
 });
 
-repo.on("document", async (doc) => {
-  console.log("Document", doc);
-  console.log(doc.handle.isReady());
-  const document = await doc.handle.doc();
-  setMainStore({
-    ...mainStore,
-    teachers: [
-      ...mainStore.teachers,
-      newTeacherEntity({
-        fullName: document.fullName,
-        email: document.email,
-      }),
-    ],
-  });
-});
+// repo.on("document", async (doc) => {
+//   console.log("Document", doc);
+//   console.log(doc.handle.isReady());
+//   const document = await doc.handle.doc();
+//   setMainStore({
+//     ...mainStore,
+//     teachers: [
+//       ...mainStore.teachers,
+//       newTeacherEntity({
+//         fullName: document.fullName,
+//         email: document.email,
+//       }),
+//     ],
+//   });
+// });
 
 const ListTeachers = () => {
   return (

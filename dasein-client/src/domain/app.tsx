@@ -19,16 +19,6 @@ type TeacherRepo = {
 type TeacherUiState = TeacherRepo;
 type TeacherStore = TeacherRepo;
 
-type App<T> = ({
-  uiState,
-  store,
-}: {
-  uiState: TeacherUiState;
-  store: TeacherStore;
-}) => {
-  renderSink: T;
-};
-
 const createApp = () => {
   const repo = createSyncRepo({
     onDocument: async (doc) => {
@@ -50,3 +40,5 @@ const createApp = () => {
     renderSink: () => <Router root={Layout}>{routes}</Router>,
   };
 };
+
+export { createApp };
