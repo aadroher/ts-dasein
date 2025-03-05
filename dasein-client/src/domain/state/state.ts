@@ -1,6 +1,7 @@
 import type {
   DocumentPayload,
   DeleteDocumentPayload,
+  AnyDocumentId,
 } from "@automerge/automerge-repo";
 import type { Entity } from "../entities/entity";
 import type { TeacherEntity, Teacher } from "../entities/teacher";
@@ -10,10 +11,16 @@ import { createStore } from "solid-js/store";
 import { Repo } from "@automerge/automerge-repo";
 import { IndexedDBStorageAdapter } from "@automerge/automerge-repo-storage-indexeddb";
 import { BroadcastChannelNetworkAdapter } from "@automerge/automerge-repo-network-broadcastchannel";
+import { MessageChannelNetworkAdapter } from "@automerge/automerge-repo-network-messagechannel";
 import { newTeacherEntity } from "../entities/teacher";
 
+type Automergeable = {
+  automergeId?: AnyDocumentId;
+};
+type AutomergeableTeacherEntity = TeacherEntity & Automergeable;
+
 type State = {
-  teachers: TeacherEntity[];
+  teachers: AutomergeableTeacherEntity[];
 };
 
 type Repository<T extends Entity> = {
@@ -24,37 +31,51 @@ type Repository<T extends Entity> = {
 };
 
 type Repositories = {
-  teachers: Repository<TeacherEntity>;
+  teachers: Repository<AutomergeableTeacherEntity>;
 };
 
 const createRepositories = (): Repositories => {
+  console.log("🚨 Creating repositories");
   const [store, setStore] = createStore<State>({
     teachers: [],
   });
 
   const storageAdapter = new IndexedDBStorageAdapter("teacher-db");
-  const networkAdapter = new BroadcastChannelNetworkAdapter();
-  const repo = new Repo({
+  const networkAdapter = new BroadcastChannelNetworkAdapter({
+    channelName: "dasein-main",
+  });
+  const automergeRepository = new Repo({
     storage: storageAdapter,
     network: [networkAdapter],
   });
 
-  repo.on("document", async (event) => {
+  automergeRepository.on("document", async (event) => {
     console.log("🚨 New document event received");
     console.log("Event: ", event);
-    const document = await event.handle.doc();
-    console.log("Document: ", document);
+    const automergeDocumentId = event.handle.documentId;
+    const automergeTeacherDocument = await event.handle.doc();
+    console.log("Document: ", automergeTeacherDocument);
+    const automergeableTeacherEntity = {
+      ...automergeTeacherDocument,
+      automergeId: automergeDocumentId,
+    };
     setStore({
-      teachers: [...store.teachers, document],
+      teachers: [...store.teachers, automergeableTeacherEntity],
     });
   });
 
-  repo.on("delete-document", (event) => {
+  automergeRepository.on("delete-document", (event) => {
     console.log("🚨 Delete document event received");
     console.log("Event: ", event);
+    const documentId = event.documentId;
+    setStore({
+      teachers: store.teachers.filter(
+        (teacher) => teacher.automergeId !== documentId
+      ),
+    });
   });
 
-  repo.on("unavailable-document", (event) => {
+  automergeRepository.on("unavailable-document", (event) => {
     console.log("🚨 Unavailable document event received");
     console.log("Event: ", event);
   });
@@ -63,10 +84,15 @@ const createRepositories = (): Repositories => {
     teachers: {
       add: async (item) => {
         const teacherEntity = newTeacherEntity(item);
-        repo.create(teacherEntity);
+        automergeRepository.create(teacherEntity);
       },
       remove: async ({ id }) => {
         console.log("🚨 Remove teacher", id);
+
+        const teacher = store.teachers.find((teacher) => teacher.id === id);
+        if (teacher?.automergeId) {
+          automergeRepository.delete(teacher.automergeId);
+        }
       },
       find: ({ id }) => {
         return store.teachers.find((teacher) => teacher.id === id);
