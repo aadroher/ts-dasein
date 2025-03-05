@@ -14,6 +14,12 @@ const ListTeachers = () => {
               <dt>Email</dt>
               <dd>{teacher.email}</dd>
             </dl>
+            <button
+              onClick={() => repositories.teachers.remove({ id: teacher.id })}
+              class="bg-red-900 text-white p-2 rounded-md"
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ol>

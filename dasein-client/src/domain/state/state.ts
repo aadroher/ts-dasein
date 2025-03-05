@@ -65,7 +65,9 @@ const createRepositories = (): Repositories => {
         const teacherEntity = newTeacherEntity(item);
         repo.create(teacherEntity);
       },
-      remove: async ({ id }) => {},
+      remove: async ({ id }) => {
+        console.log("🚨 Remove teacher", id);
+      },
       find: ({ id }) => {
         return store.teachers.find((teacher) => teacher.id === id);
       },
