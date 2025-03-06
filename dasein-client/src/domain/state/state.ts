@@ -15,12 +15,18 @@ import { MessageChannelNetworkAdapter } from "@automerge/automerge-repo-network-
 import { newTeacherEntity } from "../entities/teacher";
 
 type Automergeable = {
-  automergeId?: AnyDocumentId;
+  automergeId: AnyDocumentId | null;
 };
-type AutomergeableTeacherEntity = TeacherEntity & Automergeable;
+
+type Collection<T extends Entity> = {
+  name: string;
+  items: T[];
+};
+
+type AutomergeableCollection<T extends Entity> = Collection<T> & Automergeable;
 
 type State = {
-  teachers: AutomergeableTeacherEntity[];
+  collections: AutomergeableCollection<Entity>[];
 };
 
 type Repository<T extends Entity> = {
@@ -30,14 +36,18 @@ type Repository<T extends Entity> = {
   list: () => T[];
 };
 
-type Repositories = {
-  teachers: Repository<AutomergeableTeacherEntity>;
-};
+type Repositories = Record<string, Repository<Entity>>;
 
 const createRepositories = (): Repositories => {
   console.log("🚨 Creating repositories");
   const [store, setStore] = createStore<State>({
-    teachers: [],
+    collections: [
+      {
+        automergeId: null,
+        name: "teachers",
+        items: [],
+      } as AutomergeableCollection<TeacherEntity>,
+    ],
   });
 
   const storageAdapter = new IndexedDBStorageAdapter("teacher-db");
@@ -53,35 +63,44 @@ const createRepositories = (): Repositories => {
     console.log("🚨 New document event received");
     console.log("Event: ", event);
     const automergeDocumentId = event.handle.documentId;
-    const automergeTeacherDocument = await event.handle.doc();
-    console.log("Document: ", automergeTeacherDocument);
-    const automergeableTeacherEntity = {
-      ...automergeTeacherDocument,
-      automergeId: automergeDocumentId,
-    };
-    setStore({
-      teachers: [...store.teachers, automergeableTeacherEntity],
-    });
+    const automergeCollectionDocument = await event.handle.doc();
+    console.log("Document: ", automergeCollectionDocument);
+    const collection = store.collections.find(
+      (collection) => collection.automergeId === automergeDocumentId
+    );
+    if (!collection) {
+      throw new Error("Collection not found");
+    }
+    const newCollectionItems = [
+      ...collection.items,
+      automergeCollectionDocument,
+    ];
+    setStore(
+      "collections",
+      (collection) => collection.automergeId === automergeDocumentId,
+      "items",
+      newCollectionItems
+    );
   });
 
-  automergeRepository.on("delete-document", (event) => {
-    console.log("🚨 Delete document event received");
-    console.log("Event: ", event);
-    const documentId = event.documentId;
-    setStore({
-      teachers: store.teachers.filter(
-        (teacher) => teacher.automergeId !== documentId
-      ),
-    });
-  });
+  // automergeRepository.on("delete-document", (event) => {
+  //   console.log("🚨 Delete document event received");
+  //   console.log("Event: ", event);
+  //   const documentId = event.documentId;
+  //   setStore({
+  //     teachers: store.teachers.filter(
+  //       (teacher) => teacher.automergeId !== documentId
+  //     ),
+  //   });
+  // });
 
-  automergeRepository.on("unavailable-document", (event) => {
-    console.log("🚨 Unavailable document event received");
-    console.log("Event: ", event);
-  });
+  // automergeRepository.on("unavailable-document", (event) => {
+  //   console.log("🚨 Unavailable document event received");
+  //   console.log("Event: ", event);
+  // });
 
-  return {
-    teachers: {
+  return [
+    {
       add: async (item) => {
         const teacherEntity = newTeacherEntity(item);
         automergeRepository.create(teacherEntity);
@@ -101,7 +120,7 @@ const createRepositories = (): Repositories => {
         return store.teachers;
       },
     },
-  };
+  ];
 };
 
 const repositories = createRepositories();
